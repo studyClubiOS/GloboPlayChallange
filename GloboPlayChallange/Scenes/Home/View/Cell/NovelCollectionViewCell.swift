@@ -10,13 +10,7 @@ import UIKit
 class NovelCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Properties
-    
-    private lazy var labelNovel: UILabel = {
-        let labelNovel = UILabel()
-        labelNovel.text = "Novelas"
-        return labelNovel
-    }()
-    
+
      lazy var imageNovel: UIImageView = {
         let imageNovel = UIImageView()
         return imageNovel
