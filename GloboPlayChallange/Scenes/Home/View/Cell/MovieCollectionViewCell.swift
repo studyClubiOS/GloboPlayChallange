@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NovelCollectionViewCell: UICollectionViewCell {
+class MovieCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Properties
 
@@ -19,7 +19,9 @@ class NovelCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Methods
     
-    func setupCell(){
+    func setupCell(movie: Result ){
+//        imageNovel.image = movie.posterPath
+        
     }
     
     private func addConstraints() {
@@ -32,8 +34,8 @@ class NovelCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.backgroundColor = .black
-        contentView.addSubview(imageNovel)
+        contentView.backgroundColor = .red
+//        contentView.addSubview(imageNovel)
     }
     
     required init?(coder: NSCoder) {
