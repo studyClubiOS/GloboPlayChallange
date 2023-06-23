@@ -7,48 +7,36 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
-    
-    private let colors: [UIColor] = [.red, .green, .blue, .orange, .purple, .black, .white, .cyan]
-    let homeItem = UITabBarItem(title: "Home", image: UIImage(named: "home"), tag: 0)
-    let favoritesItem = UITabBarItem(title: "Favoritos", image: UIImage(named: "favorites"), tag: 1)
-    
+class MoviesListViewController: UIViewController {
+        
     //MARK: - Life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .black
         configHierarchy()
         configConstraints()
         updateNavigationBar(font: UIFont.boldSystemFont(ofSize: 20), color: .white)
-        tabBarItems()
     }
-    
-    func updateNavigationBar(font: UIFont, color: UIColor) {
-        navigationItem.title = "globoplay"
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: color
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-    }
-    
     
     //MARK: - Properties
     
-    let tabBar = UITabBar()
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
     
-    func tabBarItems() {
-        tabBar.delegate = self
-        tabBar.setItems([homeItem, favoritesItem], animated: false)
-        tabBar.barTintColor = .black
-    }
+    private lazy var contentView: UIView = {
+        let contentView = UIView()
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        return contentView
+    }()
     
     private lazy var labelTitleNovel: UILabel = {
         let labelTitleNovel = UILabel()
         labelTitleNovel.text = "Novelas"
-        labelTitleNovel.textColor = .black
+        labelTitleNovel.textColor = .white
         labelTitleNovel.font = .systemFont(ofSize: 18, weight: .semibold)
         labelTitleNovel.translatesAutoresizingMaskIntoConstraints = false
         return labelTitleNovel
@@ -64,8 +52,7 @@ class HomeViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = .lightGray
-        collectionView.register(NovelCollectionViewCell.self, forCellWithReuseIdentifier: "novelCell")
+        collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "novelCell")
         
         return collectionView
     }()
@@ -73,7 +60,7 @@ class HomeViewController: UIViewController {
     private lazy var labelTitleSeries: UILabel = {
         let labelTitleSeries = UILabel()
         labelTitleSeries.text = "Séries"
-        labelTitleSeries.textColor = .black
+        labelTitleSeries.textColor = .white
         labelTitleSeries.font = .systemFont(ofSize: 18, weight: .semibold)
         labelTitleSeries.translatesAutoresizingMaskIntoConstraints = false
         return labelTitleSeries
@@ -89,8 +76,7 @@ class HomeViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = .lightGray
-        collectionView.register(NovelCollectionViewCell.self, forCellWithReuseIdentifier: "novelCell")
+        collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "novelCell")
         
         return collectionView
     }()
@@ -98,7 +84,7 @@ class HomeViewController: UIViewController {
     private lazy var labelTitleCine: UILabel = {
         let labelTitleSeries = UILabel()
         labelTitleSeries.text = "Cinema"
-        labelTitleSeries.textColor = .black
+        labelTitleSeries.textColor = .white
         labelTitleSeries.font = .systemFont(ofSize: 18, weight: .semibold)
         labelTitleSeries.translatesAutoresizingMaskIntoConstraints = false
         return labelTitleSeries
@@ -114,48 +100,68 @@ class HomeViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = .lightGray
-        collectionView.register(NovelCollectionViewCell.self, forCellWithReuseIdentifier: "novelCell")
+        collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "novelCell")
         
         return collectionView
     }()
     
-    
     // MARK: - Constraints
     
     private func configHierarchy(){
-        view.addSubview(labelTitleNovel)
-        view.addSubview(collectionViewNovel)
-        view.addSubview(labelTitleSeries)
-        view.addSubview(collectionViewSeries)
-        view.addSubview(labelTitleCine)
-        view.addSubview(collectionViewCine)
-        view.addSubview(tabBar)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(labelTitleNovel)
+        contentView.addSubview(collectionViewNovel)
+        contentView.addSubview(labelTitleSeries)
+        contentView.addSubview(collectionViewSeries)
+        contentView.addSubview(labelTitleCine)
+        contentView.addSubview(collectionViewCine)
     }
     
     private func configConstraints(){
+        addConstraintsScrollView()
+        addConstraintsContentView()
         addConstraintsLabelTitleNovel()
         addConstraintsCollectionViewNovel()
         addConstraintsLabelTitleSeries()
         addConstraintsCollectionViewSeries()
         addConstraintsLabelTitleCine()
         addConstraintsCollectionViewCine()
-        addConstraintsTabBar()
-        
+    }
+    
+    private func addConstraintsScrollView() {
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.heightAnchor.constraint(greaterThanOrEqualTo: view.heightAnchor)
+        ])
+    }
+    
+    private func addConstraintsContentView() {
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor)
+        ])
     }
     
     private func addConstraintsLabelTitleNovel() {
         NSLayoutConstraint.activate([
-            labelTitleNovel.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            labelTitleNovel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            labelTitleNovel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20),
+            labelTitleNovel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
         ])
     }
     
     private func addConstraintsCollectionViewNovel() {
         NSLayoutConstraint.activate([
             collectionViewNovel.topAnchor.constraint(equalTo: labelTitleNovel.bottomAnchor, constant: 10),
-            collectionViewNovel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            collectionViewNovel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            collectionViewNovel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            collectionViewNovel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
             collectionViewNovel.heightAnchor.constraint(equalToConstant: 150)
         ])
     }
@@ -163,15 +169,15 @@ class HomeViewController: UIViewController {
     private func addConstraintsLabelTitleSeries() {
         NSLayoutConstraint.activate([
             labelTitleSeries.topAnchor.constraint(equalTo: collectionViewNovel.bottomAnchor, constant: 35),
-            labelTitleSeries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            labelTitleSeries.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
         ])
     }
     
     private func addConstraintsCollectionViewSeries() {
         NSLayoutConstraint.activate([
             collectionViewSeries.topAnchor.constraint(equalTo: labelTitleSeries.bottomAnchor, constant: 10),
-            collectionViewSeries.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            collectionViewSeries.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            collectionViewSeries.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            collectionViewSeries.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
             collectionViewSeries.heightAnchor.constraint(equalToConstant: 150)
         ])
     }
@@ -179,44 +185,45 @@ class HomeViewController: UIViewController {
     private func addConstraintsLabelTitleCine() {
         NSLayoutConstraint.activate([
             labelTitleCine.topAnchor.constraint(equalTo: collectionViewSeries.bottomAnchor, constant: 35),
-            labelTitleCine.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16)
+            labelTitleCine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
         ])
     }
     
     private func addConstraintsCollectionViewCine() {
         NSLayoutConstraint.activate([
             collectionViewCine.topAnchor.constraint(equalTo: labelTitleCine.bottomAnchor, constant: 10),
-            collectionViewCine.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            collectionViewCine.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            collectionViewCine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            collectionViewCine.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
             collectionViewCine.heightAnchor.constraint(equalToConstant: 150)
         ])
     }
     
-    func addConstraintsTabBar() {
-        tabBar.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tabBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tabBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tabBar.heightAnchor.constraint(equalToConstant: 80)
-        ])
+    // MARK: - Methods
+    
+    func updateNavigationBar(font: UIFont, color: UIColor) {
+        navigationItem.title = "globoplay"
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .foregroundColor: color
+        ]
+        navigationController?.navigationBar.titleTextAttributes = attributes
     }
 }
 
 //MARK: - Extensions UICollectionViewDelegate, UICollectionViewDataSource and UICollectionViewDelegateFlowLayout
 
-extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension MoviesListViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return colors.count
+        return 10
     }
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "novelCell", for: indexPath) as? NovelCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "novelCell", for: indexPath) as? MovieCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.imageNovel.image = UIImage(named: "splash")
         return cell
     }
     
@@ -228,7 +235,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 }
 //MARK: - Extensions UITabBarDelegate
 
-extension HomeViewController: UITabBarDelegate {
+extension MoviesListViewController: UITabBarDelegate {
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if item.tag == 0 {
             // Lógica para lidar com a seleção da opção "Home"
@@ -242,5 +249,5 @@ extension HomeViewController: UITabBarDelegate {
 
 
 #Preview("HomeViewController") {
-    HomeViewController()
+    MoviesListViewController()
 }
