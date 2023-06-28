@@ -10,32 +10,29 @@ import UIKit
 class MovieCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Properties
-
-     lazy var imageNovel: UIImageView = {
+    lazy var imageNovel: UIImageView = {
         let imageNovel = UIImageView()
+        imageNovel.translatesAutoresizingMaskIntoConstraints = false
         return imageNovel
     }()
     
-    
     // MARK: - Methods
-    
-    func setupCell(movie: Result ){
-//        imageNovel.image = movie.posterPath
-        
-    }
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            imageNovel.heightAnchor.constraint(equalToConstant: 100),
-            imageNovel.widthAnchor.constraint(equalToConstant: 100)
+            imageNovel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageNovel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageNovel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            imageNovel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
-        
     }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.backgroundColor = .red
-//        contentView.addSubview(imageNovel)
+        contentView.addSubview(imageNovel)
+        addConstraints()
+        
     }
     
     required init?(coder: NSCoder) {

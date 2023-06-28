@@ -10,7 +10,6 @@ import UIKit
 class FavoritesViewController: UIViewController {
     
     // MARK: - Life cycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -19,7 +18,6 @@ class FavoritesViewController: UIViewController {
     }
     
     // MARK: - Properties
-    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -69,7 +67,6 @@ class FavoritesViewController: UIViewController {
 }
 
 // MARK: - Extensions UICollectionViewDelegate, UICollectionViewDataSource
-
 extension FavoritesViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -88,6 +85,6 @@ extension FavoritesViewController: UICollectionViewDelegate, UICollectionViewDat
     }
 }
 
-#Preview("FavoritesViewController") {
-    FavoritesViewController()
-}
+//#Preview("FavoritesViewController") {
+//    FavoritesViewController()
+//}

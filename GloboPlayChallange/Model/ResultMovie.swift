@@ -6,30 +6,22 @@
 //
 
 import Foundation
+import UIKit
 
-// MARK: - Movies
-struct Movies: Codable {
-    let page: Int
-    let results: [Result]
-    let totalPages, totalResults: Int
-
-    enum CodingKeys: String, CodingKey {
-        case page, results
-        case totalPages = "total_pages"
-        case totalResults = "total_results"
-    }
-}
-
-// MARK: - Result
-struct Result: Codable {
+// MARK: - ResultMovie
+struct ResultMovie: Codable {
+    
     let adult: Bool
     let backdropPath: String
-    let genreIDS: [Int]
+    let budget: Int
+    let homepage: String
     let id: Int
-    let originalLanguage: OriginalLanguage
-    let originalTitle, overview: String
+    let imdbID, originalLanguage, originalTitle, overview: String
     let popularity: Double
-    let posterPath, releaseDate, title: String
+    let posterPath: String
+    let releaseDate: String
+    let revenue, runtime: Int
+    let status, tagline, title: String
     let video: Bool
     let voteAverage: Double
     let voteCount: Int
@@ -37,21 +29,17 @@ struct Result: Codable {
     enum CodingKeys: String, CodingKey {
         case adult
         case backdropPath = "backdrop_path"
-        case genreIDS = "genre_ids"
-        case id
+        case budget, homepage, id
+        case imdbID = "imdb_id"
         case originalLanguage = "original_language"
         case originalTitle = "original_title"
         case overview, popularity
         case posterPath = "poster_path"
         case releaseDate = "release_date"
-        case title, video
+        case revenue, runtime
+        case status, tagline, title, video
         case voteAverage = "vote_average"
         case voteCount = "vote_count"
     }
 }
 
-enum OriginalLanguage: String, Codable {
-    case en = "en"
-    case es = "es"
-    case ja = "ja"
-}

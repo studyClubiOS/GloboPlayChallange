@@ -9,11 +9,16 @@ import Foundation
 import UIKit
 
 class TabBarController: UITabBarController {
+    
+    //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Define a cor de fundo da Tab Bar
         tabBar.barTintColor = .black
+        addControllersTabBar()
+    }
+    
+    //MARK: - Properties
+    func addControllersTabBar() {
         
         let homeViewController = MoviesListViewController()
         let favoritesViewController = FavoritesViewController()
@@ -24,7 +29,6 @@ class TabBarController: UITabBarController {
         favoritesViewController.title = "Minha Lista"
         favoritesViewController.tabBarItem.image = UIImage(named: "favorites")
         
-        // Cria instâncias de UINavigationController
         let homeNavigationController = UINavigationController(rootViewController: homeViewController)
         let favoritesNavigationController = UINavigationController(rootViewController: favoritesViewController)
         
@@ -32,6 +36,6 @@ class TabBarController: UITabBarController {
     }
 }
 
-#Preview("TabBarController") {
-    TabBarController()
-}
+//#Preview("TabBarController") {
+//    TabBarController()
+//}

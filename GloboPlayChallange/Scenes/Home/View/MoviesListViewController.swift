@@ -8,19 +8,25 @@
 import UIKit
 
 class MoviesListViewController: UIViewController {
-        
-    //MARK: - Life cycle
     
+    private var movies: [ResultMovie] = []
+    
+    private var moviesListViewModel = MovieListViewModel()
+    var service = ServiceAPI()
+    
+    //MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         configHierarchy()
         configConstraints()
         updateNavigationBar(font: UIFont.boldSystemFont(ofSize: 20), color: .white)
+//        service.delegate = self
+        service.getRequestMovie()
+        moviesListViewModel.fetchMovies()
     }
     
     //MARK: - Properties
-    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -106,7 +112,6 @@ class MoviesListViewController: UIViewController {
     }()
     
     // MARK: - Constraints
-    
     private func configHierarchy(){
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -131,11 +136,10 @@ class MoviesListViewController: UIViewController {
     
     private func addConstraintsScrollView() {
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.heightAnchor.constraint(greaterThanOrEqualTo: view.heightAnchor)
         ])
     }
     
@@ -199,7 +203,6 @@ class MoviesListViewController: UIViewController {
     }
     
     // MARK: - Methods
-    
     func updateNavigationBar(font: UIFont, color: UIColor) {
         navigationItem.title = "globoplay"
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -212,18 +215,18 @@ class MoviesListViewController: UIViewController {
 }
 
 //MARK: - Extensions UICollectionViewDelegate, UICollectionViewDataSource and UICollectionViewDelegateFlowLayout
-
 extension MoviesListViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return moviesListViewModel.numberOfMovies()
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "novelCell", for: indexPath) as? MovieCollectionViewCell else {
             return UICollectionViewCell()
         }
+        let movieViewModel = moviesListViewModel.movieViewModel(at: indexPath.row)
+        movieViewModel.configure(cell)
         return cell
     }
     
@@ -233,21 +236,16 @@ extension MoviesListViewController: UICollectionViewDataSource, UICollectionView
         return CGSize(width: width, height: height)
     }
 }
-//MARK: - Extensions UITabBarDelegate
 
-extension MoviesListViewController: UITabBarDelegate {
-    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        if item.tag == 0 {
-            // Lógica para lidar com a seleção da opção "Home"
-        } else if item.tag == 1 {
-            let favoritesViewController = FavoritesViewController()
-            favoritesViewController.title = "Minha Lista"
-            self.navigationController?.pushViewController(favoritesViewController, animated: true)
+extension MoviesListViewController: ServiceAPIDelegate {
+    func didFetchImageData(_ image: UIImage) {
+        DispatchQueue.main.async {
+            self.collectionViewNovel.reloadData()
         }
     }
 }
 
-
-#Preview("HomeViewController") {
-    MoviesListViewController()
-}
+//
+//#Preview("HomeViewController") {
+//    MoviesListViewController()
+//}
