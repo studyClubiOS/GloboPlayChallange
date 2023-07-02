@@ -8,10 +8,7 @@
 import UIKit
 
 class MoviesListViewController: UIViewController {
-    
-    private var movies: [ResultMovie] = []
-    
-    private var moviesListViewModel = MovieListViewModel()
+        
     var service = ServiceAPI()
     
     //MARK: - Life cycle
@@ -21,9 +18,11 @@ class MoviesListViewController: UIViewController {
         configHierarchy()
         configConstraints()
         updateNavigationBar(font: UIFont.boldSystemFont(ofSize: 20), color: .white)
-//        service.delegate = self
-        service.getRequestMovie()
-        moviesListViewModel.fetchMovies()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadMovies()
     }
     
     //MARK: - Properties
@@ -63,64 +62,12 @@ class MoviesListViewController: UIViewController {
         return collectionView
     }()
     
-    private lazy var labelTitleSeries: UILabel = {
-        let labelTitleSeries = UILabel()
-        labelTitleSeries.text = "Séries"
-        labelTitleSeries.textColor = .white
-        labelTitleSeries.font = .systemFont(ofSize: 18, weight: .semibold)
-        labelTitleSeries.translatesAutoresizingMaskIntoConstraints = false
-        return labelTitleSeries
-    }()
-    
-    private lazy var collectionViewSeries: UICollectionView = {
-        
-        let collectionViewLayout = UICollectionViewFlowLayout()
-        collectionViewLayout.minimumInteritemSpacing = 10
-        collectionViewLayout.scrollDirection = .horizontal
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "novelCell")
-        
-        return collectionView
-    }()
-    
-    private lazy var labelTitleCine: UILabel = {
-        let labelTitleSeries = UILabel()
-        labelTitleSeries.text = "Cinema"
-        labelTitleSeries.textColor = .white
-        labelTitleSeries.font = .systemFont(ofSize: 18, weight: .semibold)
-        labelTitleSeries.translatesAutoresizingMaskIntoConstraints = false
-        return labelTitleSeries
-    }()
-    
-    private lazy var collectionViewCine: UICollectionView = {
-        
-        let collectionViewLayout = UICollectionViewFlowLayout()
-        collectionViewLayout.minimumInteritemSpacing = 10
-        collectionViewLayout.scrollDirection = .horizontal
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: "novelCell")
-        
-        return collectionView
-    }()
-    
     // MARK: - Constraints
     private func configHierarchy(){
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(labelTitleNovel)
         contentView.addSubview(collectionViewNovel)
-        contentView.addSubview(labelTitleSeries)
-        contentView.addSubview(collectionViewSeries)
-        contentView.addSubview(labelTitleCine)
-        contentView.addSubview(collectionViewCine)
     }
     
     private func configConstraints(){
@@ -128,10 +75,6 @@ class MoviesListViewController: UIViewController {
         addConstraintsContentView()
         addConstraintsLabelTitleNovel()
         addConstraintsCollectionViewNovel()
-        addConstraintsLabelTitleSeries()
-        addConstraintsCollectionViewSeries()
-        addConstraintsLabelTitleCine()
-        addConstraintsCollectionViewCine()
     }
     
     private func addConstraintsScrollView() {
@@ -170,38 +113,6 @@ class MoviesListViewController: UIViewController {
         ])
     }
     
-    private func addConstraintsLabelTitleSeries() {
-        NSLayoutConstraint.activate([
-            labelTitleSeries.topAnchor.constraint(equalTo: collectionViewNovel.bottomAnchor, constant: 35),
-            labelTitleSeries.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-        ])
-    }
-    
-    private func addConstraintsCollectionViewSeries() {
-        NSLayoutConstraint.activate([
-            collectionViewSeries.topAnchor.constraint(equalTo: labelTitleSeries.bottomAnchor, constant: 10),
-            collectionViewSeries.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            collectionViewSeries.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
-            collectionViewSeries.heightAnchor.constraint(equalToConstant: 150)
-        ])
-    }
-    
-    private func addConstraintsLabelTitleCine() {
-        NSLayoutConstraint.activate([
-            labelTitleCine.topAnchor.constraint(equalTo: collectionViewSeries.bottomAnchor, constant: 35),
-            labelTitleCine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
-        ])
-    }
-    
-    private func addConstraintsCollectionViewCine() {
-        NSLayoutConstraint.activate([
-            collectionViewCine.topAnchor.constraint(equalTo: labelTitleCine.bottomAnchor, constant: 10),
-            collectionViewCine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            collectionViewCine.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
-            collectionViewCine.heightAnchor.constraint(equalToConstant: 150)
-        ])
-    }
-    
     // MARK: - Methods
     func updateNavigationBar(font: UIFont, color: UIColor) {
         navigationItem.title = "globoplay"
@@ -212,21 +123,37 @@ class MoviesListViewController: UIViewController {
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
     }
+    
+    func reloadMovies() {
+        service.getRequestMovie { movies, error in
+            guard let movies else { return }
+            MovieModel.movieList = movies
+            self.collectionViewNovel.reloadData()
+        }
+    }
 }
 
 //MARK: - Extensions UICollectionViewDelegate, UICollectionViewDataSource and UICollectionViewDelegateFlowLayout
 extension MoviesListViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return moviesListViewModel.numberOfMovies()
+        return MovieModel.movieList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "novelCell", for: indexPath) as? MovieCollectionViewCell else {
             return UICollectionViewCell()
         }
-        let movieViewModel = moviesListViewModel.movieViewModel(at: indexPath.row)
-        movieViewModel.configure(cell)
+        
+        let movie = MovieModel.movieList[indexPath.row]
+        if let posterPath = movie.posterPath {
+            service.getImageFromBackdropPath(posterPath: posterPath) { data, error in
+                guard let data else { return }
+                guard let image = UIImage(data: data) else { return }
+                cell.setupCell(image)
+                cell.setNeedsLayout()
+            }
+        }
         return cell
     }
     
@@ -234,14 +161,6 @@ extension MoviesListViewController: UICollectionViewDataSource, UICollectionView
         let width: CGFloat = 100.0
         let height: CGFloat = 150.0
         return CGSize(width: width, height: height)
-    }
-}
-
-extension MoviesListViewController: ServiceAPIDelegate {
-    func didFetchImageData(_ image: UIImage) {
-        DispatchQueue.main.async {
-            self.collectionViewNovel.reloadData()
-        }
     }
 }
 

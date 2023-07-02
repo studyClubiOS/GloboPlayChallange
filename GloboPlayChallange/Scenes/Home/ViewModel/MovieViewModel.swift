@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-//
+
 //struct MovieViewModel {
 //    
 //    let movie: Result

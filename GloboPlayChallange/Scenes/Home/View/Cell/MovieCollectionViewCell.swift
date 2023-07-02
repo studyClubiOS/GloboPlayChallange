@@ -13,6 +13,7 @@ class MovieCollectionViewCell: UICollectionViewCell {
     lazy var imageNovel: UIImageView = {
         let imageNovel = UIImageView()
         imageNovel.translatesAutoresizingMaskIntoConstraints = false
+        imageNovel.backgroundColor = .blue
         return imageNovel
     }()
     
@@ -27,12 +28,15 @@ class MovieCollectionViewCell: UICollectionViewCell {
         ])
     }
     
+    func setupCell(_ image: UIImage){
+        imageNovel.image = image
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         contentView.addSubview(imageNovel)
         addConstraints()
-        
     }
     
     required init?(coder: NSCoder) {

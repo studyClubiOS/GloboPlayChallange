@@ -34,7 +34,7 @@ class FavoritesViewController: UIViewController {
         collectionView.register(FavoritesCollectionViewCell.self, forCellWithReuseIdentifier: "favoritesCell")
         return collectionView
     }()
-    
+
     private func configHierarchy() {
         view.addSubview(scrollView)
         scrollView.addSubview(collectionView)
@@ -44,7 +44,7 @@ class FavoritesViewController: UIViewController {
         addConstraintsScrollView()
         addConstraintsCollectionView()
     }
-    
+
     private func addConstraintsScrollView() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -53,7 +53,7 @@ class FavoritesViewController: UIViewController {
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-    
+
     private func addConstraintsCollectionView() {
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10),
