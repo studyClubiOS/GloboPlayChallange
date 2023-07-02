@@ -9,37 +9,41 @@ import Foundation
 import UIKit
 
 // MARK: - ResultMovie
-struct ResultMovie: Codable {
+struct ResultMovie: Codable, Equatable {
     
+    let posterPath: String?
     let adult: Bool
-    let backdropPath: String
-    let budget: Int
-    let homepage: String
-    let id: Int
-    let imdbID, originalLanguage, originalTitle, overview: String
-    let popularity: Double
-    let posterPath: String
+    let overview: String
     let releaseDate: String
-    let revenue, runtime: Int
-    let status, tagline, title: String
+    let genreIds: [Int]
+    let id: Int
+    let originalTitle: String
+    let originalLanguage: String
+    let title: String
+    let backdropPath: String?
+    let popularity: Double
+    let voteCount: Int
     let video: Bool
     let voteAverage: Double
-    let voteCount: Int
-
+    
+    var releaseYear: String {
+        return String(releaseDate.prefix(4))
+    }
+    
     enum CodingKeys: String, CodingKey {
-        case adult
-        case backdropPath = "backdrop_path"
-        case budget, homepage, id
-        case imdbID = "imdb_id"
-        case originalLanguage = "original_language"
-        case originalTitle = "original_title"
-        case overview, popularity
         case posterPath = "poster_path"
+        case adult
+        case overview
         case releaseDate = "release_date"
-        case revenue, runtime
-        case status, tagline, title, video
-        case voteAverage = "vote_average"
+        case genreIds = "genre_ids"
+        case id
+        case originalTitle = "original_title"
+        case originalLanguage = "original_language"
+        case title
+        case backdropPath = "backdrop_path"
+        case popularity
         case voteCount = "vote_count"
+        case video
+        case voteAverage = "vote_average"
     }
 }
-

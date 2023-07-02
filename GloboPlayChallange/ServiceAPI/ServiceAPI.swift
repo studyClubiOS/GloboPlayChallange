@@ -19,53 +19,51 @@ class ServiceAPI {
     
     var headers = [
         "accept": "application/json",
-        "Authorization": "\(Keys.apiKey)"
+        "Authorization": "\(Keys.token)"
     ]
     // MARK: - Request
     
-    func getRequestMovie(completion: @escaping (ResultMovie?, Error?) -> Void) {
-        guard let url = URL(string: "https://api.themoviedb.org/3/movie/11?api_key=\(Keys.apiKey)") else {
-            completion(nil, NSError(domain: "Invalid URL", code: 0, userInfo: nil))
-            return
-        }
+    func getRequestMovie(completion: @escaping ([ResultMovie]?, Error?) -> Void) {
+        guard let url = URL(string: "https://api.themoviedb.org/3/movie/popular?api_key=\(Keys.apiKey)") else { return }
+        print(url)
         
         var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.allHTTPHeaderFields = headers
-        
+
         let session = URLSession.shared
-        let task = session.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion(nil, error)
-                return
-            }
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    let movie = try decoder.decode(ResultMovie.self, from: data)
-                    completion(movie, nil)
-                } catch {
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                DispatchQueue.main.async {
                     completion(nil, error)
                 }
-            } else {
-                completion(nil, NSError(domain: "No data received", code: 0, userInfo: nil))
+                return
+            }
+            let decoder = JSONDecoder()
+            do {
+                let response = try decoder.decode(MovieResults.self, from: data)
+                DispatchQueue.main.async {
+                    completion(response.results, nil)
+                    print(response.results)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
             }
         }
         task.resume()
     }
     
     // MARK: - Request for download image
-    func getImageFromBackdropPath(posterPath: String) -> UIImage? {
+    func getImageFromBackdropPath(posterPath: String, completion: @escaping(Data?, Error?) -> Void) {
         let imageURLString = "https://image.tmdb.org/t/p/w500\(posterPath)"
         guard let imageURL = URL(string: imageURLString) else {
-            return nil
+            return
         }
-        if let imageData = try? Data(contentsOf: imageURL), let image = UIImage(data: imageData) {
+        let task = URLSession.shared.dataTask(with: imageURL) { data, response, error in
             DispatchQueue.main.async {
-                let imageView = UIImageView(image: image)
+                completion(data, error)
             }
         }
-        return nil
+        task.resume()
     }
-    
 }
