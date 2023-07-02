@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B61A97D62A50ED5200F079CB /* MovieResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61A97D52A50ED5200F079CB /* MovieResults.swift */; };
 		B6336D362A44776D00734051 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6336D352A44776D00734051 /* TabBar.swift */; };
 		B6336D382A44C38400734051 /* FavoritesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6336D372A44C38400734051 /* FavoritesTableViewCell.swift */; };
 		B6336D3C2A4628BA00734051 /* ResultMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6336D3B2A4628BA00734051 /* ResultMovie.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B61A97D52A50ED5200F079CB /* MovieResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieResults.swift; sourceTree = "<group>"; };
 		B6336D352A44776D00734051 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		B6336D372A44C38400734051 /* FavoritesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesTableViewCell.swift; sourceTree = "<group>"; };
 		B6336D3B2A4628BA00734051 /* ResultMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultMovie.swift; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				B6336D3B2A4628BA00734051 /* ResultMovie.swift */,
+				B61A97D52A50ED5200F079CB /* MovieResults.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B65261002A4328D800307AE2 /* MoviesListViewController.swift in Sources */,
+				B61A97D62A50ED5200F079CB /* MovieResults.swift in Sources */,
 				B6336D3E2A46330300734051 /* MovieListViewModel.swift in Sources */,
 				B65260FC2A4328D800307AE2 /* AppDelegate.swift in Sources */,
 				B6336D3C2A4628BA00734051 /* ResultMovie.swift in Sources */,
